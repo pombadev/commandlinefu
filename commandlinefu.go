@@ -19,7 +19,7 @@ import (
 	"golang.org/x/net/html"
 )
 
-// Represent an instance of commandlinefu.com
+// Commandlinefu Represent an instance of commandlinefu.com
 type Commandlinefu struct {
 	randomUrl string
 	wickedUrl string
@@ -139,7 +139,7 @@ func (c Commandlinefu) random() error {
 	return prettyPrint(source)
 }
 
-// Match query on any thing, eg commands or comments, may return unwanted results
+// Match query on anything, e.g. commands or comments, may return unwanted results
 func (c Commandlinefu) matching(query string) error {
 	matchUrl := fmt.Sprintf("%s/%s/%s/plaintext/sort-by-votes", c.matchUrl, query, base64.StdEncoding.EncodeToString([]byte(query)))
 
@@ -184,7 +184,7 @@ func prettyPrint(source string) error {
 	return nil
 }
 
-// Trim first line of a string, will be splitted by '\n'
+// Trim first line of a string, will be split by '\n'
 func trimFirstLine(s string) string {
 	str := strings.Split(s, "\n")
 
@@ -224,7 +224,7 @@ func help(arg string) {
 	}
 }
 
-// Return an instance of `Commandlinefu`
+// NewCommandlinefu Return an instance of `Commandlinefu`
 func NewCommandlinefu() Commandlinefu {
 	var origin, has = os.LookupEnv("COMMANDLINEFU_HOST")
 

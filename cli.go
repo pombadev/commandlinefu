@@ -29,11 +29,11 @@ func completer(d prompt.Document) []prompt.Suggest {
 
 	} else {
 		suggestions = []prompt.Suggest{
-			{Text: "browse", Description: "Browse all comands, sorted by days, month, weekly, all time etc"},
+			{Text: "browse", Description: "Browse all commands, sorted by days, month, weekly, all time etc"},
 			{Text: "exit", Description: "Exit the current repl session"},
 			{Text: "forthewicked", Description: "Commands for the wicked, be warned!"},
 			{Text: "help", Description: "Prints help information"},
-			{Text: "match", Description: "Match all commads for the given query (searchs on comments also)"},
+			{Text: "match", Description: "Match all commands for the given query (searches on comments also)"},
 			{Text: "random", Description: "Get random tips"},
 			{Text: "search", Description: "Search for commands that matches the given query"},
 			{Text: "version", Description: "Prints version information"},
@@ -43,7 +43,7 @@ func completer(d prompt.Document) []prompt.Suggest {
 	return prompt.FilterFuzzy(suggestions, d.GetWordBeforeCursor(), true)
 }
 
-// Represent our cli a struct
+// Cli Represent our cli a struct
 type Cli struct {
 	// Start a REPL session?
 	repl bool
@@ -55,7 +55,7 @@ type Cli struct {
 	app Commandlinefu
 }
 
-// Initialize a new instance of `Cli`
+// NewCli Initialize a new instance of `Cli`
 func NewCli() Cli {
 	repl := flag.Bool("repl", true, fmt.Sprintf("Starts a %s repl", AppName))
 	query := flag.String("query", "", "Command or question to search")
@@ -66,12 +66,12 @@ func NewCli() Cli {
 	return Cli{repl: *repl, query: *query, version: *version, app: NewCommandlinefu()}
 }
 
-// Show App's version
+// Version Show App's version
 func (c Cli) Version() {
 	fmt.Println(AppName + " " + AppVersion)
 }
 
-// Start a new REPL session
+// Repl Start a new REPL session
 func (c Cli) Repl() {
 	var header strings.Builder
 
