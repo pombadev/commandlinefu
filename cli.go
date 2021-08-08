@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"os"
 	"strings"
 
 	"github.com/c-bata/go-prompt"
@@ -33,6 +34,7 @@ func completer(d prompt.Document) []prompt.Suggest {
 			{Text: "match", Description: "match"},
 			{Text: "help", Description: "Help"},
 			{Text: "search", Description: "Search"},
+			{Text: "exit", Description: "Exit repl session"},
 		}
 	}
 
@@ -99,6 +101,8 @@ func (c Cli) Repl() {
 				run(func() error {
 					return c.app.search(param)
 				})
+			case "exit":
+				os.Exit(0)
 			case "help":
 				help("")
 
