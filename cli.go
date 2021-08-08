@@ -58,7 +58,7 @@ type Cli struct {
 // Initialize a new instance of `Cli`
 func NewCli() Cli {
 	repl := flag.Bool("repl", true, fmt.Sprintf("Starts a %s repl", AppName))
-	query := flag.String("query", "", "A query")
+	query := flag.String("query", "", "Command or question to search")
 	version := flag.Bool("version", false, "Prints version information")
 
 	flag.Parse()
