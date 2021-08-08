@@ -59,11 +59,11 @@ func NewCli() Cli {
 }
 
 func (c Cli) Version() {
-	fmt.Printf("v%s+%s\n", AppVersion, AppRevision)
+	fmt.Printf("%s+%s\n", AppVersion, AppRevision)
 }
 
 func (c Cli) Repl() {
-	fmt.Printf("A cli and REPL for %s.com (v%s git+%s)\nPlease use `exit` or `Ctrl-D` to exit this program.\nType help to see all available commands and parameter\n", AppName, AppVersion, AppRevision)
+	fmt.Printf("A cli and REPL for %s.com (%s git+%s)\nPlease use `exit` or `Ctrl-D` to exit this program\nType help to see all available commands and parameter\n", AppName, AppVersion, AppRevision)
 	repl := prompt.New(
 		func(input string) {
 			var (
