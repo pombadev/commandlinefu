@@ -6,7 +6,7 @@ import (
 
 const (
 	AppName    string = "commandlinefu"
-	AppVersion string = "v1.2.1"
+	AppVersion string = "v1.2.2"
 )
 
 func main() {
