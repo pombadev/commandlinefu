@@ -19,7 +19,8 @@ import (
 	"golang.org/x/net/html"
 )
 
-type App struct {
+// Represent an instance of commandlinefu.com
+type Commandlinefu struct {
 	randomUrl string
 	wickedUrl string
 	browseUrl string
@@ -27,12 +28,13 @@ type App struct {
 	searchUrl string
 }
 
-func (a App) search(query string) error {
+// Perform search, does a POST request with query as a FormData
+func (c Commandlinefu) search(query string) error {
 	form := url.Values{}
 
 	form.Set("q", query)
 
-	res, err := http.PostForm(a.searchUrl, form)
+	res, err := http.PostForm(c.searchUrl, form)
 
 	if err != nil {
 		return err
@@ -69,8 +71,9 @@ func (a App) search(query string) error {
 	return prettyPrint(sb.String())
 }
 
-func (a App) browse(params string) error {
-	browseUrl := a.browseUrl
+// Browse all available commands
+func (c Commandlinefu) browse(params string) error {
+	browseUrl := c.browseUrl
 
 	if len(params) != 0 {
 		browseUrl = fmt.Sprintf("%s/%s", browseUrl, params)
@@ -85,8 +88,9 @@ func (a App) browse(params string) error {
 	return prettyPrint(trimFirstLine(*resp))
 }
 
-func (a App) wicked() error {
-	resp, err := http.Get(a.wickedUrl)
+// Get "wicked" commands
+func (c Commandlinefu) wicked() error {
+	resp, err := http.Get(c.wickedUrl)
 
 	if err != nil {
 		return err
@@ -105,8 +109,9 @@ func (a App) wicked() error {
 	return prettyPrint(out + "\n")
 }
 
-func (a App) random() error {
-	resp, err := http.Get(a.randomUrl)
+// Get random commands
+func (c Commandlinefu) random() error {
+	resp, err := http.Get(c.randomUrl)
 
 	if err != nil {
 		return err
@@ -134,8 +139,9 @@ func (a App) random() error {
 	return prettyPrint(source)
 }
 
-func (a App) matching(query string) error {
-	matchUrl := fmt.Sprintf("%s/%s/%s/plaintext/sort-by-votes", a.matchUrl, query, base64.StdEncoding.EncodeToString([]byte(query)))
+// Match query on any thing, eg commands or comments, may return unwanted results
+func (c Commandlinefu) matching(query string) error {
+	matchUrl := fmt.Sprintf("%s/%s/%s/plaintext/sort-by-votes", c.matchUrl, query, base64.StdEncoding.EncodeToString([]byte(query)))
 
 	resp, err := fetch(matchUrl)
 
@@ -146,6 +152,7 @@ func (a App) matching(query string) error {
 	return prettyPrint(trimFirstLine(*resp))
 }
 
+// Perform a simple GET request and return response as string
 func fetch(url string) (*string, error) {
 	resp, err := http.Get(url)
 
@@ -166,6 +173,7 @@ func fetch(url string) (*string, error) {
 	return &rect, nil
 }
 
+// Print source to stdout with syntax highlight applied
 func prettyPrint(source string) error {
 	err := quick.Highlight(os.Stdout, source, "bash", "terminal256", "dracula")
 
@@ -176,6 +184,7 @@ func prettyPrint(source string) error {
 	return nil
 }
 
+// Trim first line of a string, will be splitted by '\n'
 func trimFirstLine(s string) string {
 	str := strings.Split(s, "\n")
 
@@ -189,6 +198,7 @@ func trimFirstLine(s string) string {
 
 }
 
+// Call the callback function passed after starting a spinner
 func run(callback func() error) {
 	spin := spinner.New(spinner.CharSets[11], 100*time.Millisecond)
 	spin.Start()
@@ -201,6 +211,7 @@ func run(callback func() error) {
 	}
 }
 
+// Print help during the live REPL session
 func help(arg string) {
 	if len(arg) > 0 {
 		fmt.Printf("Invalid command: %s\n", arg)
@@ -213,7 +224,8 @@ func help(arg string) {
 	}
 }
 
-func NewApp() App {
+// Return an instance of `Commandlinefu`
+func NewCommandlinefu() Commandlinefu {
 	var origin, has = os.LookupEnv("COMMANDLINEFU_HOST")
 
 	if !has {
@@ -227,7 +239,7 @@ func NewApp() App {
 	matchUrl := fmt.Sprintf("%s/matching", baseUrl)
 	searchUrl := fmt.Sprintf("%s/search/autocomplete", origin)
 
-	return App{
+	return Commandlinefu{
 		randomUrl,
 		wickedUrl,
 		browseUrl,

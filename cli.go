@@ -9,6 +9,7 @@ import (
 	"github.com/c-bata/go-prompt"
 )
 
+// Suggestion for available options available within the live REPL session
 func completer(d prompt.Document) []prompt.Suggest {
 	sliced := strings.Split(d.Text, " ")
 
@@ -42,13 +43,19 @@ func completer(d prompt.Document) []prompt.Suggest {
 	return prompt.FilterFuzzy(suggestions, d.GetWordBeforeCursor(), true)
 }
 
+// Represent our cli a struct
 type Cli struct {
-	repl    bool
-	query   string
+	// Start a REPL session?
+	repl bool
+	// Query string if repl is not started
+	query string
+	// App's version
 	version bool
-	app     App
+	// Instance of Commandlinefu struct
+	app Commandlinefu
 }
 
+// Initialize a new instance of `Cli`
 func NewCli() Cli {
 	repl := flag.Bool("repl", true, fmt.Sprintf("Starts a %s repl", AppName))
 	query := flag.String("query", "", "A query")
@@ -56,13 +63,15 @@ func NewCli() Cli {
 
 	flag.Parse()
 
-	return Cli{repl: *repl, query: *query, version: *version, app: NewApp()}
+	return Cli{repl: *repl, query: *query, version: *version, app: NewCommandlinefu()}
 }
 
+// Show App's version
 func (c Cli) Version() {
 	fmt.Println(AppName + " " + AppVersion)
 }
 
+// Start a new REPL session
 func (c Cli) Repl() {
 	var header strings.Builder
 
@@ -132,6 +141,7 @@ func (c Cli) Repl() {
 	repl.Run()
 }
 
+// Search whatever query (-query flag) was passed
 func (c Cli) Search() {
 	run(func() error {
 		return c.app.search(c.query)
