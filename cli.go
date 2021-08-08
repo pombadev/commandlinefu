@@ -115,7 +115,6 @@ func (c Cli) Repl() {
 				os.Exit(0)
 			case "help":
 				help("")
-
 			default:
 				help(input)
 			}
