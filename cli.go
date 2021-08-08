@@ -18,23 +18,24 @@ func completer(d prompt.Document) []prompt.Suggest {
 		cmd := sliced[0]
 		if cmd == "browse" {
 			suggestions = []prompt.Suggest{
-				{Text: "sort-by-votes", Description: "All-time Greats"},
+				{Text: "last-day", Description: "Daily"},
 				{Text: "last-month", Description: "Hot this month"},
 				{Text: "last-week", Description: "Weekly"},
-				{Text: "last-day", Description: "Daily"},
 				{Text: "latest", Description: "Latest"},
+				{Text: "sort-by-votes", Description: "All-time Greats"},
 			}
 		}
 
 	} else {
 		suggestions = []prompt.Suggest{
-			{Text: "random", Description: "Random"},
-			{Text: "forthewicked", Description: "The Wicked"},
-			{Text: "browse", Description: "browse by many params"},
-			{Text: "match", Description: "match"},
-			{Text: "help", Description: "Help"},
-			{Text: "search", Description: "Search"},
-			{Text: "exit", Description: "Exit repl session"},
+			{Text: "browse", Description: "Browse all comands, sorted by days, month, weekly, all time etc"},
+			{Text: "exit", Description: "Exit the current repl session"},
+			{Text: "forthewicked", Description: "Commands for the wicked, be warned!"},
+			{Text: "help", Description: "Prints help information"},
+			{Text: "match", Description: "Match all commads for the given query (searchs on comments also)"},
+			{Text: "random", Description: "Get random tips"},
+			{Text: "search", Description: "Search for commands that matches the given query"},
+			{Text: "version", Description: "Prints version information"},
 		}
 	}
 
@@ -59,11 +60,18 @@ func NewCli() Cli {
 }
 
 func (c Cli) Version() {
-	fmt.Printf("%s+%s\n", AppVersion, AppRevision)
+	fmt.Println(AppName + " " + AppVersion)
 }
 
 func (c Cli) Repl() {
-	fmt.Printf("A cli and REPL for %s.com (%s git+%s)\nPlease use `exit` or `Ctrl-D` to exit this program\nType help to see all available commands and parameter\n", AppName, AppVersion, AppRevision)
+	var header strings.Builder
+
+	header.WriteString(fmt.Sprintf("A cli and REPL for %s.com (%s)\n", AppName, AppVersion))
+	header.WriteString("Please use `exit` or `Ctrl-D` to exit this program\n")
+	header.WriteString("Type help to see all available commands and parameter\n")
+
+	fmt.Println(header.String())
+
 	repl := prompt.New(
 		func(input string) {
 			var (
@@ -101,6 +109,8 @@ func (c Cli) Repl() {
 				run(func() error {
 					return c.app.search(param)
 				})
+			case "version":
+				c.Version()
 			case "exit":
 				os.Exit(0)
 			case "help":
@@ -111,6 +121,7 @@ func (c Cli) Repl() {
 			}
 		},
 		completer,
+		prompt.OptionMaxSuggestion(uint16(len(completer(prompt.Document{})))),
 		prompt.OptionTitle(AppName),
 		prompt.OptionPrefixTextColor(prompt.DarkGreen),
 		prompt.OptionInputTextColor(prompt.Green),

@@ -4,10 +4,9 @@ import (
 	"os"
 )
 
-var (
-	AppRevision string
-	AppVersion  string
-	AppName     string = "commandlinefu"
+const (
+	AppName    string = "commandlinefu"
+	AppVersion string = "v1.0.2"
 )
 
 func main() {
