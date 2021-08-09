@@ -6,7 +6,11 @@ import (
 	"os"
 	"strings"
 
+	"github.com/alecthomas/chroma/quick"
+	"github.com/alecthomas/chroma/styles"
+
 	"github.com/c-bata/go-prompt"
+	clr "github.com/fatih/color"
 )
 
 // Suggestion for available options available within the live REPL session
@@ -51,6 +55,10 @@ type Cli struct {
 	query string
 	// App's version
 	version bool
+	// List available themes
+	listThemes bool
+	// Specify theme to use
+	theme string
 	// Instance of Commandlinefu struct
 	app Commandlinefu
 }
@@ -60,10 +68,35 @@ func NewCli() Cli {
 	repl := flag.Bool("repl", true, fmt.Sprintf("Starts a %s repl", AppName))
 	query := flag.String("query", "", "Command or question to search")
 	version := flag.Bool("version", false, "Prints version information")
+	listThemes := flag.Bool("list-themes", false, "List available themes")
+
+	var theme string = "dracula"
+
+	flag.Func("theme", "Set syntax highlight theme", func(q string) error {
+		ss := styles.Names()
+
+		contains := func(x string) bool {
+			for _, s := range ss {
+				if s == x {
+					return true
+				}
+			}
+
+			return false
+		}
+
+		if contains(q) {
+			theme = q
+		} else {
+			return fmt.Errorf("\nValue must be one of\n%s\n", strings.Join(ss, ", "))
+		}
+
+		return nil
+	})
 
 	flag.Parse()
 
-	return Cli{repl: *repl, query: *query, version: *version, app: NewCommandlinefu()}
+	return Cli{repl: *repl, query: *query, version: *version, app: NewCommandlinefu(), theme: theme, listThemes: *listThemes}
 }
 
 // Version Show App's version
@@ -146,4 +179,39 @@ func (c Cli) Search() {
 	run(func() error {
 		return c.app.search(c.query)
 	})
+}
+
+// ListThemes List available themes
+func (c Cli) ListThemes() {
+	source := `#!/usr/bin/env sh
+
+# All fits on one line
+command1 | command2
+
+# Long commands
+command1 \
+  | command2 \
+  | command3 \
+  | command4
+
+# log to stderr
+err() {
+  echo "[$(date +'%Y-%m-%dT%H:%M:%S%z')]: $*" >&2
+}
+
+if ! do_something; then
+  err "Unable to do_something"
+  exit 1
+fi
+
+`
+
+	cl := clr.New(clr.FgWhite).Add(clr.Underline).Add(clr.Bold)
+	availableStyles := styles.Names()
+	length := len(availableStyles) - 1
+
+	for index, style := range availableStyles {
+		cl.Printf("[%d/%d] %s\n\n", index, length, style)
+		quick.Highlight(os.Stdout, source, "bash", "terminal256", style)
+	}
 }

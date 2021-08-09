@@ -12,9 +12,14 @@ const (
 func main() {
 	cli := NewCli()
 
+	if cli.listThemes {
+		cli.ListThemes()
+		os.Exit(0)
+	}
+
 	if cli.version {
 		cli.Version()
-		os.Exit(1)
+		os.Exit(0)
 	}
 
 	if len(cli.query) >= 1 {
