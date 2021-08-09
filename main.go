@@ -1,33 +1,31 @@
 package main
 
-import (
-	"os"
-)
+import "os"
 
 const (
 	AppName    string = "commandlinefu"
-	AppVersion string = "v1.2.2"
+	AppVersion string = "v2.0.0"
 )
 
 func main() {
-	cli := NewCli()
+	app := NewApp()
 
-	if cli.listThemes {
-		cli.ListThemes()
+	if app.cli.listThemes {
+		app.ListThemes()
 		os.Exit(0)
 	}
 
-	if cli.version {
-		cli.Version()
+	if app.cli.version {
+		app.Version()
 		os.Exit(0)
 	}
 
-	if len(cli.query) >= 1 {
-		cli.Search()
+	if len(app.cli.query) >= 1 {
+		app.Search()
 		os.Exit(0)
 	}
 
-	if cli.repl {
-		cli.Repl()
+	if app.cli.repl {
+		app.Repl()
 	}
 }

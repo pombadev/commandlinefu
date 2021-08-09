@@ -13,6 +13,8 @@ import (
 	clr "github.com/fatih/color"
 )
 
+var availableStyles = styles.Names()
+
 // Suggestion for available options available within the live REPL session
 func completer(d prompt.Document) []prompt.Suggest {
 	sliced := strings.Split(d.Text, " ")
@@ -59,8 +61,6 @@ type Cli struct {
 	listThemes bool
 	// Specify theme to use
 	theme string
-	// Instance of Commandlinefu struct
-	app Commandlinefu
 }
 
 // NewCli Initialize a new instance of `Cli`
@@ -73,10 +73,8 @@ func NewCli() Cli {
 	var theme string = "dracula"
 
 	flag.Func("theme", "Set syntax highlight theme", func(q string) error {
-		ss := styles.Names()
-
 		contains := func(x string) bool {
-			for _, s := range ss {
+			for _, s := range availableStyles {
 				if s == x {
 					return true
 				}
@@ -88,7 +86,7 @@ func NewCli() Cli {
 		if contains(q) {
 			theme = q
 		} else {
-			return fmt.Errorf("\nValue must be one of\n%s\n", strings.Join(ss, ", "))
+			return fmt.Errorf("\nValue must be one of\n%s\n", strings.Join(availableStyles, ", "))
 		}
 
 		return nil
@@ -96,16 +94,16 @@ func NewCli() Cli {
 
 	flag.Parse()
 
-	return Cli{repl: *repl, query: *query, version: *version, app: NewCommandlinefu(), theme: theme, listThemes: *listThemes}
+	return Cli{repl: *repl, query: *query, version: *version, theme: theme, listThemes: *listThemes}
 }
 
 // Version Show App's version
-func (c Cli) Version() {
+func (app *App) Version() {
 	fmt.Println(AppName + " " + AppVersion)
 }
 
 // Repl Start a new REPL session
-func (c Cli) Repl() {
+func (app *App) Repl() {
 	var header strings.Builder
 
 	header.WriteString(fmt.Sprintf("A cli and REPL for %s.com (%s)\n", AppName, AppVersion))
@@ -133,26 +131,26 @@ func (c Cli) Repl() {
 			switch cmd {
 			case "random":
 				run(func() error {
-					return c.app.random()
+					return app.random()
 				})
 			case "forthewicked":
 				run(func() error {
-					return c.app.wicked()
+					return app.wicked()
 				})
 			case "browse":
 				run(func() error {
-					return c.app.browse(param)
+					return app.browse(param)
 				})
 			case "match":
 				run(func() error {
-					return c.app.matching(param)
+					return app.matching(param)
 				})
 			case "search":
 				run(func() error {
-					return c.app.search(param)
+					return app.search(param)
 				})
 			case "version":
-				c.Version()
+				app.Version()
 			case "exit":
 				os.Exit(0)
 			case "help":
@@ -175,14 +173,14 @@ func (c Cli) Repl() {
 }
 
 // Search whatever query (-query flag) was passed
-func (c Cli) Search() {
+func (app *App) Search() {
 	run(func() error {
-		return c.app.search(c.query)
+		return app.search(app.cli.query)
 	})
 }
 
 // ListThemes List available themes
-func (c Cli) ListThemes() {
+func (app *App) ListThemes() {
 	source := `#!/usr/bin/env sh
 
 # All fits on one line
@@ -207,7 +205,6 @@ fi
 `
 
 	cl := clr.New(clr.FgWhite).Add(clr.Underline).Add(clr.Bold)
-	availableStyles := styles.Names()
 	length := len(availableStyles) - 1
 
 	for index, style := range availableStyles {
