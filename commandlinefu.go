@@ -19,7 +19,7 @@ import (
 	"golang.org/x/net/html"
 )
 
-// Urls Represent an instance of commandlinefu.com
+// Urls to interact with commandlinefu.com
 type Urls struct {
 	randomUrl string
 	wickedUrl string
@@ -109,7 +109,7 @@ func (app *App) wicked() error {
 	return app.PrettyPrint(out + "\n")
 }
 
-// Get random commands
+// Get random command
 func (app *App) random() error {
 	resp, err := http.Get(app.urls.randomUrl)
 
@@ -224,7 +224,7 @@ func help(arg string) {
 	}
 }
 
-// NewUrls Return an instance of `Commandlinefu`
+// NewUrls Return an instance of `Urls`
 func NewUrls() Urls {
 	var origin, has = os.LookupEnv("COMMANDLINEFU_HOST")
 

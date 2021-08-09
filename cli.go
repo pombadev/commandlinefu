@@ -10,7 +10,7 @@ import (
 	"github.com/alecthomas/chroma/styles"
 
 	"github.com/c-bata/go-prompt"
-	clr "github.com/fatih/color"
+	colour "github.com/fatih/color"
 )
 
 var availableStyles = styles.Names()
@@ -49,9 +49,9 @@ func completer(d prompt.Document) []prompt.Suggest {
 	return prompt.FilterFuzzy(suggestions, d.GetWordBeforeCursor(), true)
 }
 
-// Cli Represent our cli a struct
+// Cli Represent our cli as a struct
 type Cli struct {
-	// Start a REPL session?
+	// Start a REPL session
 	repl bool
 	// Query string if repl is not started
 	query string
@@ -204,7 +204,7 @@ fi
 
 `
 
-	cl := clr.New(clr.FgWhite).Add(clr.Underline).Add(clr.Bold)
+	cl := colour.New(colour.FgWhite).Add(colour.Underline).Add(colour.Bold)
 	length := len(availableStyles) - 1
 
 	for index, style := range availableStyles {
