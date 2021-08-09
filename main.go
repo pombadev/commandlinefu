@@ -2,7 +2,7 @@ package main
 
 const (
 	AppName    string = "commandlinefu"
-	AppVersion string = "v2.0.1"
+	AppVersion string = "v1.3.0"
 )
 
 func main() {
