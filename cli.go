@@ -33,6 +33,15 @@ func completer(d prompt.Document) []prompt.Suggest {
 			}
 		}
 
+		if cmd == "settheme" {
+			for _, theme := range availableStyles {
+				suggestions = append(suggestions, prompt.Suggest{
+					Text:        theme,
+					Description: theme,
+				})
+			}
+		}
+
 	} else {
 		suggestions = []prompt.Suggest{
 			{Text: "browse", Description: "Browse all commands, sorted by days, month, weekly, all time etc"},
@@ -42,6 +51,7 @@ func completer(d prompt.Document) []prompt.Suggest {
 			{Text: "match", Description: "Match all commands for the given query (searches on comments also)"},
 			{Text: "random", Description: "Get random tips"},
 			{Text: "search", Description: "Search for commands that matches the given query"},
+			{Text: "settheme", Description: "Set syntax highlight theme"},
 			{Text: "version", Description: "Prints version information"},
 		}
 	}
@@ -73,20 +83,12 @@ func NewCli() Cli {
 	var theme string = "dracula"
 
 	flag.Func("theme", "Set syntax highlight theme", func(q string) error {
-		contains := func(x string) bool {
-			for _, s := range availableStyles {
-				if s == x {
-					return true
-				}
-			}
+		hasTheme, err := HasTheme(q)
 
-			return false
-		}
-
-		if contains(q) {
+		if hasTheme {
 			theme = q
 		} else {
-			return fmt.Errorf("\nValue must be one of\n%s\n", strings.Join(availableStyles, ", "))
+			return err
 		}
 
 		return nil
@@ -95,6 +97,16 @@ func NewCli() Cli {
 	flag.Parse()
 
 	return Cli{repl: *repl, query: *query, version: *version, theme: theme, listThemes: *listThemes}
+}
+
+func HasTheme(name string) (bool, error) {
+	for _, styleName := range availableStyles {
+		if styleName == name {
+			return true, nil
+		}
+	}
+
+	return false, fmt.Errorf("\nValue must be one of\n%s\n", strings.Join(availableStyles, ", "))
 }
 
 // Version Show App's version
@@ -149,6 +161,13 @@ func (app *App) Repl() {
 				run(func() error {
 					return app.search(param)
 				})
+			case "settheme":
+				hasTheme, err := HasTheme(param)
+				if hasTheme {
+					app.cli.theme = param
+				} else {
+					fmt.Print(err)
+				}
 			case "version":
 				app.Version()
 			case "exit":
@@ -160,7 +179,7 @@ func (app *App) Repl() {
 			}
 		},
 		completer,
-		prompt.OptionMaxSuggestion(uint16(len(completer(prompt.Document{})))),
+		prompt.OptionMaxSuggestion(20),
 		prompt.OptionTitle(AppName),
 		prompt.OptionPrefixTextColor(prompt.DarkGreen),
 		prompt.OptionInputTextColor(prompt.Green),
