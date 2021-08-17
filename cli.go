@@ -28,9 +28,15 @@ func completer(d prompt.Document) []prompt.Suggest {
 				{Text: "last-day", Description: "Daily"},
 				{Text: "last-month", Description: "Hot this month"},
 				{Text: "last-week", Description: "Weekly"},
-				{Text: "latest", Description: "Latest"},
-				{Text: "sort-by-votes", Description: "All-time Greats"},
 			}
+		}
+
+		if cmd == "browse" || cmd == "match" {
+			s := []prompt.Suggest{
+				{Text: "sort-by-votes", Description: "All-time Greats"},
+				{Text: "latest", Description: "Latest"},
+			}
+			suggestions = append(suggestions, s...)
 		}
 
 		if cmd == "settheme" {
@@ -67,8 +73,8 @@ type Cli struct {
 	query string
 	// App's version
 	version bool
-	// List available themes
-	listThemes bool
+	// Preview available themes
+	previewThemes bool
 	// Specify theme to use
 	theme string
 }
@@ -78,7 +84,7 @@ func NewCli() Cli {
 	repl := flag.Bool("repl", true, fmt.Sprintf("Starts a %s repl", AppName))
 	query := flag.String("query", "", "Command or question to search")
 	version := flag.Bool("version", false, "Prints version information")
-	listThemes := flag.Bool("list-themes", false, "List available themes")
+	previewThemes := flag.Bool("preview-themes", false, "Preview available themes")
 
 	var theme string = "dracula"
 
@@ -96,7 +102,7 @@ func NewCli() Cli {
 
 	flag.Parse()
 
-	return Cli{repl: *repl, query: *query, version: *version, theme: theme, listThemes: *listThemes}
+	return Cli{repl: *repl, query: *query, version: *version, theme: theme, previewThemes: *previewThemes}
 }
 
 func HasTheme(name string) (bool, error) {
@@ -198,8 +204,8 @@ func (app *App) Search() {
 	})
 }
 
-// ListThemes List available themes
-func (app *App) ListThemes() {
+// PreviewThemes List available themes
+func (app *App) PreviewThemes() {
 	source := `#!/usr/bin/env sh
 
 # All fits on one line

@@ -27,10 +27,14 @@ go get github.com/pjmp/commandlinefu
 
 ```
 Usage of commandlinefu:
+	-preview-themes
+		Preview available themes
 	-query string
-		A query
+		Command or question to search
 	-repl
 		Starts a commandlinefu repl (default true)
+	-theme value
+		Set syntax highlight theme
 	-version
 		Prints version information
 ```

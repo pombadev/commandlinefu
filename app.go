@@ -10,8 +10,8 @@ type App struct {
 }
 
 func (app *App) Run() {
-	if app.cli.listThemes {
-		app.ListThemes()
+	if app.cli.previewThemes {
+		app.PreviewThemes()
 		os.Exit(0)
 	}
 
