@@ -48,7 +48,7 @@ func (app *App) search(query string) error {
 
 	searchNodes := htmlquery.Find(node, "//ul/li[*]")
 
-	extras := regexp.MustCompile(`\((-)?\d.*\s.*comments\)`)
+	extras := regexp.MustCompile(`\((-)?\d.*\s.*comment(s)?\)`)
 
 	var sb strings.Builder
 

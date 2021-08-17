@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 )
 
@@ -27,6 +28,11 @@ func (app *App) Run() {
 
 	if app.cli.repl {
 		app.Repl()
+	} else {
+		if len(app.cli.query) == 0 {
+			fmt.Println("Please provide -query if -repl=false is set")
+			os.Exit(1)
+		}
 	}
 }
 
