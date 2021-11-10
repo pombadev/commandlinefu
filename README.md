@@ -38,3 +38,6 @@ Usage of commandlinefu:
 	-version
 		Prints version information
 ```
+
+# TODO
+ - Save preferences in a setting file

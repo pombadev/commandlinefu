@@ -175,7 +175,7 @@ func fetch(url string) (*string, error) {
 
 // Print source to stdout with syntax highlight applied
 func (app *App) PrettyPrint(source string) error {
-	err := quick.Highlight(os.Stdout, source, "bash", "terminal256", app.cli.theme)
+	err := quick.Highlight(os.Stdout, "\n"+source, "bash", "terminal256", app.cli.theme)
 
 	if err != nil {
 		return err

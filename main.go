@@ -6,7 +6,5 @@ const (
 )
 
 func main() {
-	app := NewApp()
-
-	app.Run()
+	NewApp().Run()
 }
