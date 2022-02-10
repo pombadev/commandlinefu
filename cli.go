@@ -112,6 +112,7 @@ func HasTheme(name string) (bool, error) {
 		}
 	}
 
+	//lint:ignore ST1005 I like the way this looks
 	return false, fmt.Errorf("\nValue must be one of\n%s\n", strings.Join(availableStyles, ", "))
 }
 
@@ -177,6 +178,8 @@ func (app *App) Repl() {
 			case "version":
 				app.Version()
 			case "exit":
+				// deferred functions are not run of os.Exit is called
+				restoreTermState()
 				os.Exit(0)
 			case "help":
 				help("")
@@ -195,6 +198,8 @@ func (app *App) Repl() {
 	)
 
 	repl.Run()
+
+	defer restoreTermState()
 }
 
 // Search whatever query (-query flag) was passed
